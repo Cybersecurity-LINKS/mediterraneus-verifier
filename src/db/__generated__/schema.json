@@ -1,0 +1,28 @@
+[
+  {
+    "name": "challenges",
+    "columns": [
+      {
+        "name": "expiration",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "nonce",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 2950,
+        "typeName": "UUID"
+      },
+      {
+        "name": "requester_did",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      }
+    ]
+  }
+]

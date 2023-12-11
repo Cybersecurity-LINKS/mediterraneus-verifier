@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  postgres-verifier:
+    container_name: postgres-verifier
+    hostname: database
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    volumes: 
+      - ./postgresdata:/var/lib/postgresql/data
+      - ./sql/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql
+    restart: always
+    env_file: 
+      - ./postgres.env
+        
