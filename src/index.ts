@@ -10,7 +10,7 @@ app.use(express.json())
 app.use((_, res, next) => {
     res.append('Access-Control-Allow-Origin', [`${process.env.FRONTEND}`]); // FRONTEND
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    res.append('Access-Control-Allow-Headers', '*');
     next();
 })
 

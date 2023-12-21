@@ -13,7 +13,7 @@ async function addChallenge (userDid: string) {
     }
 
     const nonce = uuidv4();
-    const newExpiration = Timestamp.nowUTC().checkedAdd(Duration.minutes(1));
+    const newExpiration = Timestamp.nowUTC().checkedAdd(Duration.minutes(10));
 
     if ( newExpiration === undefined ) {
         throw new Error("Problem while computing the expiration timestamp");

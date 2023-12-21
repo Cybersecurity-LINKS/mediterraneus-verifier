@@ -15,7 +15,7 @@
     "@databases/pg-schema-cli": "^4.3.1",
     "@databases/pg-typed": "^4.4.1",
     "@iota/identity-wasm": "^1.0.0",
-    "@iota/sdk-wasm": "^1.1.1",
+    "@iota/sdk-wasm": "^1.1.2",
     "@types/morgan": "^1.9.4",
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
