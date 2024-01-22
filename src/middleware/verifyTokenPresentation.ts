@@ -20,7 +20,7 @@ import ChallengeService from "../services/challengesService";
 import { Client } from "@iota/sdk-wasm/node/lib/client";
 // import { Client } from "@iota/sdk-wasm/node";
 
-async function verifyToken (req: Request, res: Response, next: NextFunction) {
+async function verifyTokenPresentation (req: Request, res: Response, next: NextFunction) {
     const bearer = req.body.token || req.query.token || req.headers.authorization || req.headers['x-access-token'];
     console.log("presentation jwt: ", bearer.split(" ")[1]);
     const jwtString = bearer.split(" ")[1];
@@ -130,7 +130,7 @@ async function verifyToken (req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export default verifyToken;
+export default verifyTokenPresentation;
 
 
 

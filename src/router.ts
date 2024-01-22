@@ -1,13 +1,13 @@
 import Router from 'express';
 import ChallengeController from './controllers/challenges';
-import verifyToken from './middleware/verifyToken';
+import verifyTokenPresentation from './middleware/verifyTokenPresentation';
 
 const router = Router();
-
+// TODO: handle expiration
 router.get("/challenges", ChallengeController.getChallenge); 
 
 // example of authn req
-router.get("/hello-world", verifyToken, (req, res) => {
+router.get("/hello-world", verifyTokenPresentation, (req, res) => {
     res.json('Hello World!')
 }); 
 
