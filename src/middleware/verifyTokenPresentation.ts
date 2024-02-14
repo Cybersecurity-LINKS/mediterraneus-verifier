@@ -1,5 +1,8 @@
-// https://stackoverflow.com/questions/53256724/cant-validate-token-in-middleware-jwt-express
+// SPDX-FileCopyrightText: 2024 Fondazione LINKS
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 
+// https://stackoverflow.com/questions/53256724/cant-validate-token-in-middleware-jwt-express
 import {
     CoreDID,
     EdDSAJwsVerifier,

@@ -1,5 +1,6 @@
 {
   "name": "verifier",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "version": "0.0.1",
   "main": "src/index.ts",

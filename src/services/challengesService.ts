@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Fondazione LINKS
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import db, {challenges} from '../db/database.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Duration, Timestamp } from '@iota/identity-wasm/node/identity_wasm';

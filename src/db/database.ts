@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Fondazione LINKS
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import createConnectionPool, {sql} from '@databases/pg';
 import tables from '@databases/pg-typed';
 import DatabaseSchema from './__generated__';
