@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//TODO: update
+
 import { Request, Response } from 'express';
-import ChallengeService from '../services/challengesService'; 
+import ChallengeService from '../services/sqliteChallengeService'; 
 
 async function getChallenge(req: Request, res: Response) {
-    const userDid = req.query.did as string;
+    const userDid = req.params.did as string;
     try {         
         const challenge = await ChallengeService.addChallenge(userDid);
         res.status(200).send({challenge: challenge}).end();

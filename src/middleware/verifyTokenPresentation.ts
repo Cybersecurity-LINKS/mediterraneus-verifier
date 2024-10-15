@@ -18,15 +18,15 @@ import {
     SubjectHolderRelationship,
 } from "@iota/identity-wasm/node";
 import { Request, Response, NextFunction } from "express";
-import ChallengeService from "../services/challengesService";
+import ChallengeService from "../services/sqliteChallengeService";
 // import { Client } from "@iota/sdk-wasm/node/lib/client/client";
 import { Client } from "@iota/sdk-wasm/node/lib/client";
 // import { Client } from "@iota/sdk-wasm/node";
 
 async function verifyTokenPresentation (req: Request, res: Response, next: NextFunction) {
     const bearer = req.body.token || req.query.token || req.headers.authorization || req.headers['x-access-token'];
-    console.log("presentation jwt: ", bearer.split(" ")[1]);
-    const jwtString = bearer.split(" ")[1];
+    console.log("presentation jwt: ", bearer);
+    const jwtString = bearer;
     const presentationJwt = new Jwt(jwtString);
     if (presentationJwt) {
         // ===========================================================================
@@ -119,15 +119,16 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
             console.log(`VP successfully validated`);
             next();
         } catch (err) {
+            console.log(err);
             return res.status(403).send({ 
-                success: false, 
+                status: "error", 
                 message: 'Failed to authenticate.' 
             });
         }
 
     } else {
-        return res.status(403).send({ 
-        success: false, 
+        return res.status(403).json({ 
+        status: "error", 
         message: 'No token provided.' 
         });
     }

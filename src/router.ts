@@ -8,11 +8,15 @@ import verifyTokenPresentation from './middleware/verifyTokenPresentation';
 
 const router = Router();
 // TODO: handle expiration
-router.get("/challenges", ChallengeController.getChallenge); 
+router.get("/challenges/:did", ChallengeController.getChallenge); 
 
 // example of authn req
-router.get("/hello-world", verifyTokenPresentation, (req, res) => {
-    res.json('Hello World!')
+router.get("/verify/vp", verifyTokenPresentation, (req, res) => {
+    
+    res.status(200).json({
+        "status": "success",
+        "message": "ok"
+    });
 }); 
 
 
