@@ -56,7 +56,7 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
         try {
             
             const client = new Client({
-                primaryNode: process.env.IOTA_NODE_URL,
+                primaryNode: process.env.NODE_URL,
                 localPow: true,
             });
             const didClient = new IotaIdentityClient(client);

@@ -10,7 +10,12 @@ import ChallengeService from './services/sqliteChallengeService';
 
 const router = Router();
 // removing expired challenges
-ChallengeService.cleanup()
+const CLEANUP_CYCLE_WAIT_MILLIS = 3600000 // 1 hour
+setInterval(async () => {
+    await ChallengeService.cleanup()
+}, CLEANUP_CYCLE_WAIT_MILLIS);
+
+
 
 router.get("/challenges/:did", ChallengeController.validateDID, ChallengeController.getChallenge); 
 

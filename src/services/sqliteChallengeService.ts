@@ -46,6 +46,7 @@ async function removeChallenge (challenge: string){
 }
 
 /* Remove all the expired challenges */
+// TODO: delete once every hour
 async function cleanup() {
     let deleted = await prisma.challenges.deleteMany({where: {
         expiration: { lt: Date.now() }

@@ -12,7 +12,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json())
 app.use((_, res, next) => {
-    res.append('Access-Control-Allow-Origin', [`${process.env.FRONTEND}`]); // FRONTEND
+    res.append('Access-Control-Allow-Origin', [`${process.env.ALLOW_ORIGIN}`]);
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE');
     res.append('Access-Control-Allow-Headers', '*');
     next();
