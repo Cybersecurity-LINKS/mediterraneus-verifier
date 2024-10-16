@@ -5,10 +5,14 @@
 import Router from 'express';
 import ChallengeController from './controllers/challenges';
 import verifyTokenPresentation from './middleware/verifyTokenPresentation';
+import ChallengeService from './services/sqliteChallengeService';
+
 
 const router = Router();
-// TODO: handle expiration
-router.get("/challenges/:did", ChallengeController.getChallenge); 
+// removing expired challenges
+ChallengeService.cleanup()
+
+router.get("/challenges/:did", ChallengeController.validateDID, ChallengeController.getChallenge); 
 
 // example of authn req
 router.get("/verify/vp", verifyTokenPresentation, (req, res) => {

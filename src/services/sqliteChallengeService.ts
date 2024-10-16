@@ -12,14 +12,9 @@ const prisma = new PrismaClient();
     Create and store in the db a new challenge
 */
 async function addChallenge(userDid: string){
-    /* TODO: what to do if user already has a pending challenge? 
-       Just don't care. The expiration will rule the validity of the challenge
-    */
-
     const nonce = randomUUID().toString();
     const expiresAt = Date.now() + EXPIRES_IN_MILLISECONDS;
 
-    // TODO: Add DID validation
     const challenge = await prisma.challenges.create({data: {
         nonce: nonce,
         requester_did: userDid,
@@ -29,23 +24,35 @@ async function addChallenge(userDid: string){
     return challenge;
 }
 
-async function getChallengeByNonce(nonce: string) {
-    let challenge = await prisma.challenges.findUnique({
-        where: {nonce: nonce}
-    });
-
-    return challenge;
+/*
+    Search a valid challenge into the database.
+    Valid challenge requirements:
+    1. Challenge exists
+    2. Challenge is assigned to the userDID
+    3. Challenge is not expired
+*/
+async function getChallengeByDid (userDid: string, challenge: string){
+    let validChallenge = await prisma.challenges.findUnique({where: {
+        requester_did: userDid,
+        nonce: challenge,
+        expiration: { gt: Date.now() }
+    }});
+    return validChallenge;
 }
 
-async function getChallengeByDid (userDid: string){
-    let challenge = await prisma.challenges.findFirst({where: {requester_did: userDid}});
-    return challenge;
-}
-
-async function removeChallenge (userDid: string){
-    let deleted = await prisma.challenges.deleteMany({where: {requester_did: userDid}});
+async function removeChallenge (challenge: string){
+    let deleted = await prisma.challenges.delete({where: {nonce: challenge}});
     return deleted;
 }
 
-const ChallengeService = { addChallenge, getChallengeByDid, getChallengeByNonce, removeChallenge };
+/* Remove all the expired challenges */
+async function cleanup() {
+    let deleted = await prisma.challenges.deleteMany({where: {
+        expiration: { lt: Date.now() }
+    }})
+
+    console.log("CLEAN UP DATABASE deleted %d records", deleted.count)
+}
+
+const ChallengeService = { addChallenge, getChallengeByDid, removeChallenge, cleanup };
 export default ChallengeService;

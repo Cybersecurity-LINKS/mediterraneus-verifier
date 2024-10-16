@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import ChallengeService from '../services/sqliteChallengeService'; 
+import { CoreDID } from '@iota/identity-wasm/node';
 
+// generate a nonce and return the challenge
 async function getChallenge(req: Request, res: Response) {
     const userDid = req.params.did as string;
     try {         
@@ -17,5 +19,24 @@ async function getChallenge(req: Request, res: Response) {
     }
 }
 
-const ChallengeController = { getChallenge };
+// check if the value received as a parameter is a valid did
+async function validateDID(req: Request, res: Response, next: NextFunction) {
+    const did = req.params.did as string;
+
+    // if the parsing doesn't throw an error than the did is validated
+    try{
+        let parsed = CoreDID.parse(did);
+        next();
+    }
+    catch{
+        res
+        .status(422)
+        .json({
+            "status": "error",
+            "message": "Request parameter is not a valid DID"
+        })
+    }
+}
+
+const ChallengeController = { getChallenge, validateDID };
 export default ChallengeController;
