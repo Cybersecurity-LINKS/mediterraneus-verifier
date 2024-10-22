@@ -5,14 +5,27 @@
 import Router from 'express';
 import ChallengeController from './controllers/challenges';
 import verifyTokenPresentation from './middleware/verifyTokenPresentation';
+import ChallengeService from './services/sqliteChallengeService';
+
 
 const router = Router();
-// TODO: handle expiration
-router.get("/challenges", ChallengeController.getChallenge); 
+// removing expired challenges
+const CLEANUP_CYCLE_WAIT_MILLIS = 3600000 // 1 hour
+setInterval(async () => {
+    await ChallengeService.cleanup()
+}, CLEANUP_CYCLE_WAIT_MILLIS);
+
+
+
+router.get("/challenges/:did", ChallengeController.validateDID, ChallengeController.getChallenge); 
 
 // example of authn req
-router.get("/hello-world", verifyTokenPresentation, (req, res) => {
-    res.json('Hello World!')
+router.get("/verify/vp", verifyTokenPresentation, (req, res) => {
+    
+    res.status(200).json({
+        "status": "success",
+        "message": "ok"
+    });
 }); 
 
 

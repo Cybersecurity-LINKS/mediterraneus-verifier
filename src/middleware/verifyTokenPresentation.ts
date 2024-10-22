@@ -18,17 +18,31 @@ import {
     SubjectHolderRelationship,
 } from "@iota/identity-wasm/node";
 import { Request, Response, NextFunction } from "express";
-import ChallengeService from "../services/challengesService";
+import ChallengeService from "../services/sqliteChallengeService";
 // import { Client } from "@iota/sdk-wasm/node/lib/client/client";
 import { Client } from "@iota/sdk-wasm/node/lib/client";
 // import { Client } from "@iota/sdk-wasm/node";
 
+function getNonceFromJwtHeader(token: String){
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+        throw new Error('Invalid JWT token');
+    }
+
+    // Decode the header
+    const headerBase64Url = parts[0];
+    const headerJson = Buffer.from(headerBase64Url, 'base64url').toString('utf-8');
+    const headerObject = JSON.parse(headerJson);
+    return headerObject.nonce;
+}
+
 async function verifyTokenPresentation (req: Request, res: Response, next: NextFunction) {
     const bearer = req.body.token || req.query.token || req.headers.authorization || req.headers['x-access-token'];
-    console.log("presentation jwt: ", bearer.split(" ")[1]);
-    const jwtString = bearer.split(" ")[1];
+    const jwtString = bearer;
     const presentationJwt = new Jwt(jwtString);
     if (presentationJwt) {
+        const json = presentationJwt.toJSON();
+        console.log({json});
         // ===========================================================================
         // Step 7: Verifier receives the Verifiable Presentation and verifies it.
         // ===========================================================================
@@ -42,7 +56,7 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
         try {
             
             const client = new Client({
-                primaryNode: process.env.IOTA_NODE_URL,
+                primaryNode: process.env.NODE_URL,
                 localPow: true,
             });
             const didClient = new IotaIdentityClient(client);
@@ -57,7 +71,8 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
                 presentationHolderDID.toString(),
             );
             
-            const challenge = await ChallengeService.getChallengeByDid(presentationHolderDID.toString());
+            const nonce = getNonceFromJwtHeader(jwtString);
+            const challenge = await ChallengeService.getChallengeByDid(presentationHolderDID.toString(), nonce);
 
             if ( challenge === null ) {
                 throw new Error("expected to have a challenge");
@@ -117,17 +132,20 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
 
             // Since no errors were thrown we know that the validation was successful.
             console.log(`VP successfully validated`);
+            // verification completed, removing the challenge
+            ChallengeService.removeChallenge(nonce);
             next();
         } catch (err) {
+            console.log(err);
             return res.status(403).send({ 
-                success: false, 
+                status: "error", 
                 message: 'Failed to authenticate.' 
             });
         }
 
     } else {
-        return res.status(403).send({ 
-        success: false, 
+        return res.status(403).json({ 
+        status: "error", 
         message: 'No token provided.' 
         });
     }
