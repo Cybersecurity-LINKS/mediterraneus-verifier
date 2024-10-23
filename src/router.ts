@@ -20,7 +20,7 @@ setInterval(async () => {
 router.get("/challenges/:did", ChallengeController.validateDID, ChallengeController.getChallenge); 
 
 // example of authn req
-router.get("/verify/vp", verifyTokenPresentation, (req, res) => {
+router.post("/verify/vp", verifyTokenPresentation, (_, res) => {
     
     res.status(200).json({
         "status": "success",

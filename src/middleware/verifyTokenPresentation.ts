@@ -19,9 +19,7 @@ import {
 } from "@iota/identity-wasm/node";
 import { Request, Response, NextFunction } from "express";
 import ChallengeService from "../services/sqliteChallengeService";
-// import { Client } from "@iota/sdk-wasm/node/lib/client/client";
 import { Client } from "@iota/sdk-wasm/node/lib/client";
-// import { Client } from "@iota/sdk-wasm/node";
 
 function getNonceFromJwtHeader(token: String){
     const parts = token.split('.');
@@ -139,7 +137,7 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
             console.log(err);
             return res.status(403).send({ 
                 status: "error", 
-                message: 'Failed to authenticate.' 
+                message: 'Failed to validate.' 
             });
         }
 
