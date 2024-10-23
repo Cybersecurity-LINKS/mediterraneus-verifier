@@ -1,15 +1,14 @@
 version: '3.9'
 services:
-  postgres-verifier:
-    container_name: postgres-verifier
-    hostname: database
-    image: postgres:latest
+  verifier:
+    build:
+      dockerfile: Dockerfile
     ports:
-      - "5434:5432"
-    volumes: 
-      - ./postgresdata:/var/lib/postgresql/data
-      - ./sql/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql
-    restart: always
-    env_file: 
-      - ./postgres.env
+      - 1235:1235
+    environment:
+      NODE_URL: "https://api.tangle.stardust.linksfoundation.com/"
+      ALLOW_ORIGIN: "http://localhost"
+      PORT: 1235
+
+
         
