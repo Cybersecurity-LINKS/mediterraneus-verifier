@@ -12,7 +12,7 @@ async function getChallenge(req: Request, res: Response) {
     const userDid = req.params.did as string;
     try {         
         const challenge = await ChallengeService.addChallenge(userDid);
-        res.status(200).send({challenge: challenge}).end();
+        res.status(200).send(challenge).end();
     } catch (error) {
         console.log(error);
         res.status(500).send(error).end();

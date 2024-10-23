@@ -9,7 +9,7 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
     "start": " node --loader ts-node/esm --env-file=.env --env-file=postgres.env ./src/index.ts",
-    "start:prod": "npm run build && node --env-file=.env --env-file=postgres.env dist/src/index.js",
+    "start:prod": "node --loader ts-node/esm dist/src/index.js",
     "dev": "nodemon"
   },
   "dependencies": {
@@ -17,11 +17,12 @@
     "@databases/pg-typed": "^4.4.1",
     "@iota/identity-wasm": "^1.0.0",
     "@iota/sdk-wasm": "^1.1.2",
+    "@prisma/client": "^5.20.0",
     "@types/morgan": "^1.9.4",
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "express-validator": "^7.0.1",
+    "express-validator": "^7.2.0",
     "morgan": "^1.10.0",
     "pg": "^8.11.1",
     "rimraf": "^5.0.1",
@@ -40,6 +41,7 @@
     "eslint-plugin-prettier": "^5.0.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
+    "prisma": "^5.20.0",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2"
   }
