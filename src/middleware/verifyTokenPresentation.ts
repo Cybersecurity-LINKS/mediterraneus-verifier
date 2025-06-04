@@ -5,6 +5,7 @@
 // https://stackoverflow.com/questions/53256724/cant-validate-token-in-middleware-jwt-express
 import {
     CoreDID,
+    CoreDocument,
     EdDSAJwsVerifier,
     FailFast,
     IotaIdentityClient,
@@ -14,6 +15,7 @@ import {
     JwtCredentialValidator,
     JwtPresentationValidationOptions,
     JwtPresentationValidator,
+    MethodData,
     Resolver,
     SubjectHolderRelationship,
 } from "@iota/identity-wasm/node";
@@ -76,6 +78,9 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
                 throw new Error("expected to have a challenge");
             }
 
+            // Add nonce to middleware result
+            res.locals.nonce = challenge.nonce;
+
             const jwtPresentationValidationOptions = new JwtPresentationValidationOptions(
                 {
                     presentationVerifierOptions: new JwsVerificationOptions({ nonce: challenge.nonce }),
@@ -88,6 +93,20 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
                 resolvedHolder,
                 jwtPresentationValidationOptions,
             );
+
+            // extract the wallet address from holder's DID document
+            const methodData = (resolvedHolder as CoreDocument).resolveMethod("#ethAddress")
+                ?.data().tryCustom().toJSON() as any;
+
+            if (methodData.name == "blockchainAccountId")
+            {
+                const address = (methodData.data as string).replace("eip155:1:", "");
+                res.locals.walletAddress = address;
+            }
+
+            // Extract signature from the VP
+            const walletSignature = decodedPresentation.customClaims()?.["walletSignature"];
+            res.locals.walletSignature = walletSignature;
 
             // Validate the credentials in the presentation.
             const credentialValidator = new JwtCredentialValidator(new EdDSAJwsVerifier());
@@ -118,16 +137,29 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
             }
             const resolvedIssuers = await resolver.resolveMultiple(issuers);
 
+            let decodedCredentials = [];
             // Validate the credentials in the presentation.
             for (let i = 0; i < jwtCredentials.length; i++) {
-                credentialValidator.validate(
+                const decoded = credentialValidator.validate(
                     jwtCredentials[i],
                     resolvedIssuers[i],
                     validationOptions,
                     FailFast.FirstError,
                 );
+                decodedCredentials.push(decoded)
             }
 
+            // The credential must contains a single Marketplace credential
+            let valid_credential = decodedCredentials
+                .filter((cred) => cred.credential().type().includes("MarketplaceCredential"))
+                .length;
+            
+            if (valid_credential != 1){
+                return res.status(403).send({ 
+                    status: "error", 
+                    message: 'Credentials are not valid.' 
+                });
+            }
             // Since no errors were thrown we know that the validation was successful.
             console.log(`VP successfully validated`);
             // verification completed, removing the challenge
