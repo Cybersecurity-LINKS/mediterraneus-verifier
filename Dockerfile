@@ -1,12 +1,12 @@
-FROM node:22-alpine
+FROM node:22-slim
+RUN apt-get update -y && apt-get install --no-install-recommends -y openssl
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci
 COPY ./src ./src
 COPY tsconfig.json ./
 RUN npm run build
-ENV DATABASE_URL="file:./sql/challenges.db"
+ENV DATABASE_URL="file:verifier.db"
 RUN npx prisma generate --schema ./src/prisma/schema.prisma
-RUN npx prisma db push --schema ./src/prisma/schema.prisma
-EXPOSE 1235
+EXPOSE 1234
 CMD ["npm", "run","start:prod"]
