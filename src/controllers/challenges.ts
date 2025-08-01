@@ -4,8 +4,8 @@
 
 
 import { NextFunction, Request, Response } from 'express';
-import ChallengeService from '../services/sqliteChallengeService'; 
-import { CoreDID } from '@iota/identity-wasm/node';
+import ChallengeService from '../services/sqliteChallengeService.js'; 
+import { CoreDID } from '@iota/identity-wasm/node/index.js';
 
 // generate a nonce and return the challenge
 async function getChallenge(req: Request, res: Response) {

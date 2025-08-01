@@ -9,6 +9,7 @@ services:
       NODE_URL: "https://api.tangle.stardust.linksfoundation.com/"
       ALLOW_ORIGIN: "http://localhost"
       PORT: 1235
+      DATABASE_URL: "verifier.db"
 
 
         

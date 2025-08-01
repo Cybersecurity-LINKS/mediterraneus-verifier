@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import express from 'express';
-import router from './router';
+import router from './router.js';
 import morgan from 'morgan';
 
 const port = parseInt(process.env.PORT || '1234');

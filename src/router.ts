@@ -3,14 +3,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import Router from 'express';
-import ChallengeController from './controllers/challenges';
-import verifyTokenPresentation from './middleware/verifyTokenPresentation';
-import ChallengeService from './services/sqliteChallengeService';
-import ServiceBaseAbi from './contracts/ServiceBaseAbi';
+import ChallengeController from './controllers/challenges.js';
+import verifyTokenPresentation from './middleware/verifyTokenPresentation.js';
+import ChallengeService from './services/sqliteChallengeService.js';
+import ServiceBaseAbi from './contracts/ServiceBaseAbi.js';
 import { ethers } from 'ethers';
 
 
 const router = Router();
+// Init the database
+await ChallengeService.init();
+
 // removing expired challenges
 const CLEANUP_CYCLE_WAIT_MILLIS = 3600000 // 1 hour
 setInterval(async () => {

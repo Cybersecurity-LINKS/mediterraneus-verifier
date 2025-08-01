@@ -18,10 +18,10 @@ import {
     MethodData,
     Resolver,
     SubjectHolderRelationship,
-} from "@iota/identity-wasm/node";
+} from "@iota/identity-wasm/node/index.js";
 import { Request, Response, NextFunction } from "express";
-import ChallengeService from "../services/sqliteChallengeService";
-import { Client } from "@iota/sdk-wasm/node/lib/client";
+import ChallengeService from "../services/sqliteChallengeService.js";
+import { Client } from "@iota/sdk-wasm/node/lib/client/index.js";
 
 function getNonceFromJwtHeader(token: String){
     const parts = token.split('.');
@@ -74,7 +74,7 @@ async function verifyTokenPresentation (req: Request, res: Response, next: NextF
             const nonce = getNonceFromJwtHeader(jwtString);
             const challenge = await ChallengeService.getChallengeByDid(presentationHolderDID.toString(), nonce);
 
-            if ( challenge === null ) {
+            if (!challenge) {
                 throw new Error("expected to have a challenge");
             }
 
