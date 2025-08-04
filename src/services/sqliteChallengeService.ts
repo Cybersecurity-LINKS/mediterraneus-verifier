@@ -65,17 +65,16 @@ async function getChallengeByDid (userDid: string, challenge: string){
     let validChallenge = await openCached()
         .then(db => {
             return db.get<Challenge>(`SELECT * FROM challenges 
-                WHERE requester_did = '?'
-                AND nonce = '?'
+                WHERE requester_did = ?
+                AND nonce = ?
                 `, [userDid, challenge]);
         });
-
     return validChallenge;
 }
 
 async function removeChallenge (challenge: string){
     await openCached()
-    .then(db => db.run(`DELETE FROM challenges WHERE nonce = '?'`, [challenge]));
+    .then(db => db.run(`DELETE FROM challenges WHERE nonce = ?`, [challenge]));
     return;
 }
 
