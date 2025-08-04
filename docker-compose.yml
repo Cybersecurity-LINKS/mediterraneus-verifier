@@ -10,6 +10,7 @@ services:
       ALLOW_ORIGIN: "http://localhost"
       PORT: 1235
       DATABASE_URL: "verifier.db"
+      RPC_PROVIDER: "https://json-rpc.evm.stardust.linksfoundation.com/sedimark-chain"
 
 
         
